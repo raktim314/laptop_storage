@@ -15,7 +15,7 @@ for i in laptops.columns:
 laptops.columns = new_col
 
 # Replace 'TB' with 000 and rm 'GB'
-storage_sec = laptops["storage"].str.replace("GB","").str.replace("TB", "000")
+laptops["storage"] = laptops["storage"].str.replace("GB","").str.replace("TB", "000")
 
 # split out into two columns for storage
 laptops[['storage_1', 'storage_2']] = laptops['storage'].str.split("+", expand=True)
@@ -31,4 +31,4 @@ for i in ['storage_1', 'storage_2']:
 
 # remove unneeded columns
 laptops.drop(['storage', "storage_1", "storage_2"], axis=1, inplace=True)
-print(laptops)
+
