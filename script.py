@@ -13,11 +13,22 @@ for i in laptops.columns:
     new_col.append(clean_c)
 
 laptops.columns = new_col
-# print(laptops.columns)
 
-storage_sec = laptops["storage"].str.replace("+","").str.rsplit(n=3,expand=True)
+# Replace 'TB' with 000 and rm 'GB'
+storage_sec = laptops["storage"].str.replace("GB","").str.replace("TB", "000")
 
-storage_sec.columns = ["A","B","C","D"]
+# split out into two columns for storage
+laptops[['storage_1', 'storage_2']] = laptops['storage'].str.split("+", expand=True)
 
-print(storage_sec[76:81])
-print(storage_sec["A"])
+for i in ['storage_1', 'storage_2']:
+	i_capacity = i + "_capacity_gb"
+	i_type = i + "_type"
+	# create new cols for capacity and type
+	laptops[[i_capacity, i_type]] = laptops[i].str.split(n=1, expand=True)
+	# make capacity numeric (can't be integer because of missing values)
+	laptops[i_capacity] = laptops[i_capacity].astype(float)
+	laptops[i_type] = laptops[i_type].str.strip()
+
+# remove unneeded columns
+laptops.drop(['storage', "storage_1", "storage_2"], axis=1, inplace=True)
+print(laptops)
